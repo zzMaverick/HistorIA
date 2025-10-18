@@ -1,10 +1,1400 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book & Clip Studio — Interface Unificada</title>
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --muted: #64748b;
+            --accent1: #7c3aed;
+            --accent2: #7c3aed;
+            --glass: rgba(255,255,255,0.7);
+            --glass-2: rgba(255,255,255,0.5);
+            --radius: 14px;
+            --gap: 18px;
+            --max-width: 1200px;
+            --shadow: 0 6px 24px rgba(2,6,23,0.08);
+            --border: 1px solid #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            background: var(--bg);
+            color: #334155;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            padding: 32px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .app {
+            width: 100%;
+            max-width: var(--max-width);
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: var(--gap);
+            align-items: start;
+        }
+
+        /* Header */
+        header {
+            grid-column: 1 / -1;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .brand {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .logo {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent1), var(--accent2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            font-size: 18px;
+            box-shadow: 0 6px 20px rgba(124,58,237,0.18);
+        }
+
+        h1 {
+            font-size: 20px;
+            margin: 0;
+        }
+
+        p.lead {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        /* Content Type Selector */
+        .content-type-selector {
+            grid-column: 1 / -1;
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .content-type {
+            flex: 1;
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 20px;
+            border: var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .content-type:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+        }
+
+        .content-type.active {
+            border-color: var(--accent1);
+            box-shadow: 0 0 0 2px rgba(124,58,237,0.2);
+        }
+
+        .type-icon {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, var(--accent1), var(--accent2));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .type-title {
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .type-desc {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        /* Main Content */
+        .main {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 18px;
+            box-shadow: var(--shadow);
+            min-height: 440px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            border: var(--border);
+        }
+
+        .row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        /* Upload Area */
+        .upload-area {
+            flex: 1;
+            background: var(--glass);
+            border-radius: 12px;
+            padding: 14px;
+            border: 1px dashed #cbd5e1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-height: 120px;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            border-color: var(--accent1);
+            background: rgba(124,58,237,0.03);
+        }
+
+        .upload-area.drag-over {
+            border-color: var(--accent1);
+            background: rgba(124,58,237,0.05);
+        }
+
+        .upload-area small {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .upload-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .btn {
+            background: linear-gradient(90deg, var(--accent1), var(--accent2));
+            border: none;
+            color: white;
+            padding: 10px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 8px 18px rgba(3,7,18,0.1);
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(3,7,18,0.15);
+        }
+
+        .btn.ghost {
+            background: transparent;
+            border: 1px solid #cbd5e1;
+            color: var(--muted);
+            box-shadow: none;
+            font-weight: 600;
+        }
+
+        .btn.ghost:hover {
+            background: rgba(124,58,237,0.05);
+            color: var(--accent1);
+            border-color: var(--accent1);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        /* Previews */
+        .previews {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .preview-card {
+            width: 84px;
+            height: 84px;
+            border-radius: 10px;
+            background: var(--glass-2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .preview-card:hover {
+            transform: scale(1.05);
+            border-color: var(--accent1);
+        }
+
+        .preview-card img, .preview-card video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .preview-card .meta {
+            position: absolute;
+            left: 6px;
+            bottom: 6px;
+            font-size: 11px;
+            background: rgba(0,0,0,0.35);
+            padding: 4px 6px;
+            border-radius: 6px;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        /* Story Editor */
+        .story {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 12px;
+            border: var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .story textarea {
+            width: 100%;
+            min-height: 140px;
+            border-radius: 10px;
+            background: transparent;
+            border: 1px dashed #cbd5e1;
+            color: inherit;
+            padding: 10px;
+            font-size: 14px;
+            resize: vertical;
+            transition: all 0.2s ease;
+        }
+
+        .story textarea:focus {
+            outline: none;
+            border-color: var(--accent1);
+            background: rgba(255,255,255,0.5);
+        }
+
+        /* Sidebar */
+        .side {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            min-height: 440px;
+            border: var(--border);
+        }
+
+        .panel-title {
+            font-size: 13px;
+            color: var(--muted);
+            margin: 0 0 6px 0;
+        }
+
+        .panel {
+            background: var(--glass);
+            border-radius: 10px;
+            padding: 12px;
+            border: var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Video Player */
+        .video-player {
+            height: 200px;
+            border-radius: 10px;
+            background: linear-gradient(180deg, #f1f5f9, #e2e8f0);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border: var(--border);
+        }
+
+        .video-player .placeholder {
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px;
+            padding: 12px;
+        }
+
+        .video-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .time-inputs {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .time-inputs input {
+            width: 80px;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            background: transparent;
+            color: inherit;
+            font-size: 13px;
+            transition: all 0.2s ease;
+        }
+
+        .time-inputs input:focus {
+            outline: none;
+            border-color: var(--accent1);
+        }
+
+        /* Clips List */
+        .clips-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 160px;
+            overflow: auto;
+            padding-right: 6px;
+        }
+
+        .clip-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border-radius: 8px;
+            background: var(--glass);
+            border: var(--border);
+            font-size: 13px;
+            transition: all 0.2s ease;
+        }
+
+        .clip-item:hover {
+            background: rgba(124,58,237,0.03);
+            border-color: rgba(124,58,237,0.1);
+        }
+
+        .clip-meta {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        /* Book Pages Preview */
+        .pages {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .page {
+            background: linear-gradient(180deg, #f8fafc, #eef2ff);
+            color: #0b1220;
+            padding: 12px;
+            border-radius: 8px;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            border: 1px solid rgba(2,6,23,0.04);
+            transition: all 0.2s ease;
+        }
+
+        .page:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .page .p-title {
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .page p {
+            font-size: 13px;
+            color: #24313d;
+            margin: 0;
+        }
+
+        /* Footer Actions */
+        .actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .secondary {
+            background: transparent;
+            border: 1px solid #cbd5e1;
+            color: var(--muted);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .secondary:hover {
+            background: rgba(124,58,237,0.05);
+            color: var(--accent1);
+            border-color: var(--accent1);
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        /* Output Preview */
+        .output-preview {
+            background: var(--glass);
+            border-radius: 12px;
+            padding: 16px;
+            border: var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .output-item {
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            border: var(--border);
+        }
+
+        .output-item h4 {
+            margin: 0 0 8px 0;
+            font-size: 14px;
+            color: var(--accent1);
+        }
+
+        .output-item p {
+            margin: 0;
+            font-size: 13px;
+            color: #334155;
+        }
+
+        /* Responsive */
+        @media (max-width: 980px) {
+            .app {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+            .side {
+                order: 2;
+            }
+            .content-type-selector {
+                flex-direction: column;
+            }
+        }
+
+        /* Utilities */
+        .muted {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .hint {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .sep {
+            height: 1px;
+            background: #e2e8f0;
+            margin: 6px 0;
+            border-radius: 2px;
+        }
+
+        /* SVG Icons */
+        .icon {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        /* Progress Bar */
+        .progress {
+            width: 100%;
+            height: 4px;
+            background: #e2e8f0;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent1), var(--accent2));
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--card);
+            border: var(--border);
+            border-radius: 8px;
+            padding: 12px 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast .icon {
+            width: 18px;
+            height: 18px;
+        }
+
+        .toast.success {
+            border-left: 3px solid #10b981;
+        }
+
+        .toast.error {
+            border-left: 3px solid #ef4444;
+        }
+    </style>
 </head>
 <body>
-$END$
+<div class="app" role="application" aria-label="Book & Clip Studio UI">
+    <header>
+        <div class="brand">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2V2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M9 7H15" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M9 11H15" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M9 15H12" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <div>
+                <h1>Book & Clip Studio</h1>
+                <p class="lead">Crie conteúdo unificado e exporte em múltiplos formatos</p>
+            </div>
+        </div>
+        <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+            <button class="btn ghost" id="help-btn">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M9.09 9C9.3251 8.33167 9.78915 7.76811 10.4 7.40913C11.0108 7.05016 11.7289 6.91894 12.4272 7.03871C13.1255 7.15848 13.7588 7.52152 14.2151 8.06353C14.6713 8.60553 14.9211 9.29152 14.92 10C14.92 12 11.92 13 11.92 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 17H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Ajuda
+            </button>
+            <button class="btn" id="new-project">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 5V19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M5 12H19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Novo Projeto
+            </button>
+        </div>
+    </header>
+
+    <!-- Content Type Selector -->
+    <div class="content-type-selector">
+        <div class="content-type active" data-type="story">
+            <div class="type-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M14 2V8H20" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M16 13H8" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M16 17H8" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M10 9H9H8" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div class="type-title">Story</div>
+            <div class="type-desc">Conteúdo curto para redes sociais</div>
+        </div>
+        <div class="content-type" data-type="book">
+            <div class="type-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2V2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div class="type-title">Livro</div>
+            <div class="type-desc">Estrutura completa com capítulos</div>
+        </div>
+        <div class="content-type" data-type="longform">
+            <div class="type-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 19H5C4.46957 19 3.96086 18.7893 3.58579 18.4142C3.21071 18.0391 3 17.5304 3 17V7C3 6.46957 3.21071 5.96086 3.58579 5.58579C3.96086 5.21071 4.46957 5 5 5H19C19.5304 5 20.0391 5.21071 20.4142 5.58579C20.7893 5.96086 21 6.46957 21 7V12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M8 10H16" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M8 14H12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M16 17L19 20" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M16 23L19 20" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div class="type-title">Conteúdo Longo</div>
+            <div class="type-desc">Artigos extensos e documentação</div>
+        </div>
+    </div>
+
+    <main class="main" aria-labelledby="main-heading">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h2 id="main-heading" style="font-size:15px;margin:0">Conteúdo do Projeto</h2>
+            <div class="muted" style="font-size:13px">Status: <span id="project-status">Pronto para criar</span></div>
+        </div>
+
+        <!-- Unified Content Section -->
+        <div class="content-section active" id="unified-section">
+            <div class="row" style="align-items:flex-start;">
+                <div class="upload-area" id="media-upload" aria-label="Upload de mídia">
+                    <strong>Mídia do Projeto</strong>
+                    <small>Arraste imagens e vídeos aqui ou use o botão para selecionar</small>
+                    <div class="upload-controls">
+                        <label class="btn" for="input-media">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M17 8L12 3L7 8" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M12 3V15" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Selecionar Mídia
+                        </label>
+                        <input id="input-media" type="file" multiple accept="image/*,video/*" />
+                        <div style="margin-left:auto" class="hint">
+                            <span id="media-count">0</span> arquivos selecionados
+                        </div>
+                    </div>
+                    <div class="previews" id="media-previews" aria-hidden="true">
+                        <!-- Previews serão adicionados dinamicamente -->
+                    </div>
+                    <div class="progress" id="media-progress" style="display: none;">
+                        <div class="progress-bar" id="media-progress-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="story" aria-label="Editor de conteúdo" style="width:320px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <strong>Conteúdo Principal</strong>
+                        <div class="hint" id="word-count">0 palavras</div>
+                    </div>
+                    <textarea id="content-text" placeholder="Escreva ou cole seu conteúdo aqui..."></textarea>
+                    <div style="display:flex;gap:8px;justify-content:flex-end">
+                        <button class="secondary" id="save-content">Salvar</button>
+                        <button class="btn" id="analyze-content">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 12L11 14L15 10" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C13.6569 3 15.1569 3.67363 16.364 4.72395" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Otimizar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Output Preview -->
+            <div class="output-preview" id="output-preview">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                    <strong>Pré-visualização do Resultado</strong>
+                    <div class="muted" id="output-type">Story</div>
+                </div>
+                <div class="sep"></div>
+                <div id="output-content">
+                    <!-- Conteúdo será gerado dinamicamente baseado no tipo selecionado -->
+                </div>
+            </div>
+
+            <div style="display:flex;justify-content:flex-end;gap:8px">
+                <button class="secondary" id="configure-output">Configurar Saída</button>
+                <button class="btn" id="export-content">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M7 10L12 15L17 10" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 15V3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Exportar
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <aside class="side" aria-labelledby="side-heading">
+        <h3 id="side-heading" style="margin:0">Ferramentas de Conteúdo</h3>
+
+        <div class="panel" role="region" aria-label="Gerenciamento de vídeo">
+            <div class="panel-title">Gerenciamento de Vídeo</div>
+            <div class="video-player" id="video-player" aria-hidden="true">
+                <div class="placeholder">
+                    Selecione um vídeo para pré-visualizar.<br>
+                    Use os controles para marcar cortes.
+                </div>
+            </div>
+
+            <div class="video-controls">
+                <button class="btn ghost" id="prev-video">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19 20L9 12L19 4V20Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M5 19V5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Anterior
+                </button>
+                <button class="btn" id="play-video">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5 3L19 12L5 21V3Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Play
+                </button>
+                <button class="btn ghost" id="next-video">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5 4L15 12L5 20V4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M19 5V19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Próximo
+                </button>
+            </div>
+
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+                <div class="time-inputs">
+                    <input type="text" id="start-time" placeholder="Start 00:00:00" aria-label="Início do corte" />
+                    <input type="text" id="end-time" placeholder="End 00:00:00" aria-label="Fim do corte" />
+                </div>
+                <div style="display:flex;gap:8px">
+                    <button class="btn" id="mark-start">Marcar Início</button>
+                    <button class="btn" id="mark-end">Marcar Fim</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel" role="region" aria-label="Lista de clips">
+            <div class="panel-title">Clips</div>
+            <div class="clips-list" id="clips-list">
+                <!-- Clips serão adicionados dinamicamente -->
+            </div>
+
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+                <div class="muted">Exportar metadados dos clips</div>
+                <div style="display:flex;gap:8px">
+                    <button class="secondary" id="export-json">JSON</button>
+                    <button class="btn" id="export-clips">Exportar</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel" role="region" aria-label="Configurações">
+            <div class="panel-title">Configurações de Saída</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+                <label class="hint">Formato de Saída
+                    <select id="output-format" style="width:100%;margin-top:6px;padding:8px;border-radius:8px;background:transparent;border:1px solid #cbd5e1;color:inherit">
+                        <option value="story">Story (Redes Sociais)</option>
+                        <option value="book">Livro (PDF)</option>
+                        <option value="longform">Conteúdo Longo (Documento)</option>
+                    </select>
+                </label>
+
+                <label class="hint">Estilo
+                    <select id="output-style" style="width:100%;margin-top:6px;padding:8px;border-radius:8px;background:transparent;border:1px solid #cbd5e1;color:inherit">
+                        <option>Minimal</option>
+                        <option>Foto-Centred</option>
+                        <option>Magazine</option>
+                    </select>
+                </label>
+
+                <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:6px">
+                    <button class="secondary" id="reset-settings">Reset</button>
+                    <button class="btn" id="apply-settings">Aplicar</button>
+                </div>
+            </div>
+        </div>
+    </aside>
+</div>
+
+<!-- Toast Notification -->
+<div class="toast" id="toast">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M22 11.08V12C21.9988 14.1564 21.3005 16.2547 20.0093 17.9818C18.7182 19.709 16.9033 20.9725 14.8354 21.5839C12.7674 22.1953 10.5573 22.1219 8.53447 21.3746C6.51168 20.6273 4.78465 19.2461 3.61096 17.4371C2.43727 15.628 1.87979 13.4881 2.02168 11.3363C2.16356 9.18455 2.99721 7.13631 4.39828 5.49706C5.79935 3.85781 7.69279 2.71537 9.79619 2.24013C11.8996 1.7649 14.1003 1.98232 16.07 2.85999" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M22 4L12 14.01L9 11.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span id="toast-message">Operação realizada com sucesso!</span>
+</div>
+
+<script>
+    // Estado unificado da aplicação
+    const state = {
+        currentOutputType: 'story',
+        media: [],
+        clips: [],
+        content: '',
+        settings: {
+            outputFormat: 'story',
+            outputStyle: 'Minimal'
+        }
+    };
+
+    // Elementos DOM
+    const elements = {
+        // Content type selector
+        contentTypes: document.querySelectorAll('.content-type'),
+        outputFormat: document.getElementById('output-format'),
+        outputStyle: document.getElementById('output-style'),
+
+        // Uploads
+        mediaUpload: document.getElementById('media-upload'),
+        inputMedia: document.getElementById('input-media'),
+        mediaPreviews: document.getElementById('media-previews'),
+        mediaCount: document.getElementById('media-count'),
+
+        // Content
+        contentText: document.getElementById('content-text'),
+        wordCount: document.getElementById('word-count'),
+
+        // Output Preview
+        outputPreview: document.getElementById('output-preview'),
+        outputType: document.getElementById('output-type'),
+        outputContent: document.getElementById('output-content'),
+
+        // Video
+        videoPlayer: document.getElementById('video-player'),
+        startTime: document.getElementById('start-time'),
+        endTime: document.getElementById('end-time'),
+        clipsList: document.getElementById('clips-list'),
+
+        // Buttons
+        newProject: document.getElementById('new-project'),
+        saveContent: document.getElementById('save-content'),
+        analyzeContent: document.getElementById('analyze-content'),
+        prevVideo: document.getElementById('prev-video'),
+        playVideo: document.getElementById('play-video'),
+        nextVideo: document.getElementById('next-video'),
+        markStart: document.getElementById('mark-start'),
+        markEnd: document.getElementById('mark-end'),
+        exportJson: document.getElementById('export-json'),
+        exportClips: document.getElementById('export-clips'),
+        resetSettings: document.getElementById('reset-settings'),
+        applySettings: document.getElementById('apply-settings'),
+        exportContent: document.getElementById('export-content'),
+        configureOutput: document.getElementById('configure-output'),
+        helpBtn: document.getElementById('help-btn'),
+
+        // Status
+        projectStatus: document.getElementById('project-status'),
+
+        // Toast
+        toast: document.getElementById('toast'),
+        toastMessage: document.getElementById('toast-message')
+    };
+
+    // Inicialização
+    function init() {
+        setupEventListeners();
+        updateUI();
+        showToast('Aplicação carregada com sucesso!', 'success');
+    }
+
+    // Configurar event listeners
+    function setupEventListeners() {
+        // Content type selection
+        elements.contentTypes.forEach(type => {
+            type.addEventListener('click', () => {
+                const contentType = type.getAttribute('data-type');
+                setOutputType(contentType);
+            });
+        });
+
+        // Upload de mídia
+        elements.inputMedia.addEventListener('change', handleMediaUpload);
+        elements.mediaUpload.addEventListener('dragover', handleDragOver);
+        elements.mediaUpload.addEventListener('dragleave', handleDragLeave);
+        elements.mediaUpload.addEventListener('drop', handleMediaDrop);
+
+        // Editor de conteúdo
+        elements.contentText.addEventListener('input', updateWordCount);
+        elements.saveContent.addEventListener('click', saveContent);
+        elements.analyzeContent.addEventListener('click', analyzeContent);
+
+        // Controles de vídeo
+        elements.prevVideo.addEventListener('click', prevVideo);
+        elements.playVideo.addEventListener('click', togglePlayVideo);
+        elements.nextVideo.addEventListener('click', nextVideo);
+        elements.markStart.addEventListener('click', markStartTime);
+        elements.markEnd.addEventListener('click', markEndTime);
+
+        // Exportação
+        elements.exportContent.addEventListener('click', exportContent);
+        elements.exportJson.addEventListener('click', exportJson);
+        elements.exportClips.addEventListener('click', exportClips);
+
+        // Configurações
+        elements.resetSettings.addEventListener('click', resetSettings);
+        elements.applySettings.addEventListener('click', applySettings);
+        elements.newProject.addEventListener('click', newProject);
+        elements.configureOutput.addEventListener('click', configureOutput);
+        elements.helpBtn.addEventListener('click', showHelp);
+
+        // Output format change
+        elements.outputFormat.addEventListener('change', (e) => {
+            setOutputType(e.target.value);
+        });
+    }
+
+    // Definir tipo de saída
+    function setOutputType(type) {
+        state.currentOutputType = type;
+        state.settings.outputFormat = type;
+
+        // Atualizar seleção visual
+        elements.contentTypes.forEach(el => {
+            if (el.getAttribute('data-type') === type) {
+                el.classList.add('active');
+            } else {
+                el.classList.remove('active');
+            }
+        });
+
+        // Atualizar dropdown
+        elements.outputFormat.value = type;
+
+        // Atualizar preview
+        updateOutputPreview();
+
+        showToast(`Saída ${type} selecionada`, 'success');
+    }
+
+    // Manipulação de upload de mídia
+    function handleMediaUpload(e) {
+        const files = Array.from(e.target.files);
+        simulateUpload(files);
+    }
+
+    function handleMediaDrop(e) {
+        e.preventDefault();
+        elements.mediaUpload.classList.remove('drag-over');
+        const files = Array.from(e.dataTransfer.files).filter(file =>
+            file.type.startsWith('image/') || file.type.startsWith('video/')
+        );
+        simulateUpload(files);
+    }
+
+    // Funções auxiliares de drag & drop
+    function handleDragOver(e) {
+        e.preventDefault();
+        e.currentTarget.classList.add('drag-over');
+    }
+
+    function handleDragLeave(e) {
+        e.preventDefault();
+        e.currentTarget.classList.remove('drag-over');
+    }
+
+    // Simular upload (apenas visual)
+    function simulateUpload(files) {
+        if (files.length === 0) return;
+
+        const progressBar = document.getElementById('media-progress-bar');
+        const progressContainer = document.getElementById('media-progress');
+
+        progressContainer.style.display = 'block';
+        progressBar.style.width = '0%';
+
+        let progress = 0;
+        const interval = setInterval(() => {
+            progress += 5;
+            progressBar.style.width = `${progress}%`;
+
+            if (progress >= 100) {
+                clearInterval(interval);
+                setTimeout(() => {
+                    progressContainer.style.display = 'none';
+
+                    // Adicionar arquivos ao estado
+                    files.forEach(file => {
+                        const fileObj = {
+                            name: file.name,
+                            type: file.type,
+                            size: file.size,
+                            url: URL.createObjectURL(file),
+                            isImage: file.type.startsWith('image/'),
+                            isVideo: file.type.startsWith('video/')
+                        };
+
+                        state.media.push(fileObj);
+                    });
+
+                    updateUI();
+                    showToast(`${files.length} arquivo(s) carregado(s) com sucesso!`, 'success');
+                }, 500);
+            }
+        }, 50);
+    }
+
+    // Atualizar contador de palavras
+    function updateWordCount() {
+        state.content = elements.contentText.value;
+        const wordCount = state.content.trim() === '' ? 0 : state.content.trim().split(/\s+/).length;
+        elements.wordCount.textContent = `${wordCount} palavras`;
+        updateOutputPreview();
+    }
+
+    // Atualizar preview de saída
+    function updateOutputPreview() {
+        elements.outputType.textContent = getOutputTypeName(state.currentOutputType);
+
+        let previewHTML = '';
+
+        switch(state.currentOutputType) {
+            case 'story':
+                previewHTML = generateStoryPreview();
+                break;
+            case 'book':
+                previewHTML = generateBookPreview();
+                break;
+            case 'longform':
+                previewHTML = generateLongformPreview();
+                break;
+        }
+
+        elements.outputContent.innerHTML = previewHTML;
+    }
+
+    // Gerar preview para Story
+    function generateStoryPreview() {
+        const images = state.media.filter(m => m.isImage);
+        const videos = state.media.filter(m => m.isVideo);
+
+        let html = '';
+
+        if (images.length > 0) {
+            html += `<div class="output-item">
+                <h4>Story com ${images.length} imagem(ns)</h4>
+                <p>Conteúdo otimizado para redes sociais com carrossel de imagens.</p>
+            </div>`;
+        }
+
+        if (videos.length > 0) {
+            html += `<div class="output-item">
+                <h4>Story com ${videos.length} vídeo(s)</h4>
+                <p>Conteúdo em formato de vídeo para engajamento em redes sociais.</p>
+            </div>`;
+        }
+
+        if (state.content) {
+            const wordCount = state.content.trim().split(/\s+/).length;
+            html += `<div class="output-item">
+                <h4>Texto do Story (${wordCount} palavras)</h4>
+                <p>${state.content.substring(0, 100)}${state.content.length > 100 ? '...' : ''}</p>
+            </div>`;
+        }
+
+        return html || '<div class="muted" style="text-align:center;padding:20px">Adicione conteúdo para ver a pré-visualização</div>';
+    }
+
+    // Gerar preview para Livro
+    function generateBookPreview() {
+        const images = state.media.filter(m => m.isImage);
+        const wordCount = state.content ? state.content.trim().split(/\s+/).length : 0;
+
+        let html = '';
+
+        if (wordCount > 0) {
+            const estimatedPages = Math.ceil(wordCount / 300);
+            html += `<div class="output-item">
+                <h4>Livro com ${estimatedPages} página(s) estimada(s)</h4>
+                <p>Conteúdo formatado para leitura em livro com ${wordCount} palavras.</p>
+            </div>`;
+        }
+
+        if (images.length > 0) {
+            html += `<div class="output-item">
+                <h4>${images.length} imagem(ns) incluída(s)</h4>
+                <p>Imagens serão posicionadas estrategicamente ao longo do livro.</p>
+            </div>`;
+        }
+
+        return html || '<div class="muted" style="text-align:center;padding:20px">Adicione conteúdo para ver a pré-visualização</div>';
+    }
+
+    // Gerar preview para Conteúdo Longo
+    function generateLongformPreview() {
+        const wordCount = state.content ? state.content.trim().split(/\s+/).length : 0;
+        const images = state.media.filter(m => m.isImage);
+
+        let html = '';
+
+        if (wordCount > 0) {
+            html += `<div class="output-item">
+                <h4>Conteúdo Longo (${wordCount} palavras)</h4>
+                <p>Documento estruturado com introdução, desenvolvimento e conclusão.</p>
+            </div>`;
+        }
+
+        if (images.length > 0) {
+            html += `<div class="output-item">
+                <h4>${images.length} imagem(ns) de suporte</h4>
+                <p>Imagens serão posicionadas para ilustrar o conteúdo.</p>
+            </div>`;
+        }
+
+        return html || '<div class="muted" style="text-align:center;padding:20px">Adicione conteúdo para ver a pré-visualização</div>';
+    }
+
+    // Obter nome do tipo de saída
+    function getOutputTypeName(type) {
+        const names = {
+            'story': 'Story',
+            'book': 'Livro',
+            'longform': 'Conteúdo Longo'
+        };
+        return names[type] || type;
+    }
+
+    // Funções de ação
+    function saveContent() {
+        showToast('Conteúdo salvo com sucesso!', 'success');
+    }
+
+    function analyzeContent() {
+        elements.projectStatus.textContent = 'Otimizando conteúdo...';
+        setTimeout(() => {
+            showToast('Conteúdo otimizado com sucesso!', 'success');
+            elements.projectStatus.textContent = 'Pronto para criar';
+        }, 1500);
+    }
+
+    function prevVideo() {
+        const videos = state.media.filter(m => m.isVideo);
+        if (videos.length === 0) {
+            showToast('Nenhum vídeo carregado', 'error');
+            return;
+        }
+        showToast('Vídeo anterior selecionado', 'success');
+    }
+
+    function togglePlayVideo() {
+        const videos = state.media.filter(m => m.isVideo);
+        if (videos.length === 0) {
+            showToast('Nenhum vídeo carregado', 'error');
+            return;
+        }
+        showToast('Reprodução de vídeo simulada', 'success');
+    }
+
+    function nextVideo() {
+        const videos = state.media.filter(m => m.isVideo);
+        if (videos.length === 0) {
+            showToast('Nenhum vídeo carregado', 'error');
+            return;
+        }
+        showToast('Próximo vídeo selecionado', 'success');
+    }
+
+    function markStartTime() {
+        elements.startTime.value = '00:00:12';
+        showToast('Início do corte marcado', 'success');
+    }
+
+    function markEndTime() {
+        elements.endTime.value = '00:00:24';
+        showToast('Fim do corte marcado', 'success');
+
+        // Adicionar clip à lista
+        const videos = state.media.filter(m => m.isVideo);
+        const newClip = {
+            id: state.clips.length + 1,
+            name: `Clip ${String(state.clips.length + 1).padStart(3, '0')}`,
+            video: videos.length > 0 ? videos[0].name : 'demo.mp4',
+            start: elements.startTime.value,
+            end: elements.endTime.value
+        };
+
+        state.clips.push(newClip);
+        updateClipsList();
+    }
+
+    function exportContent() {
+        elements.projectStatus.textContent = `Exportando ${getOutputTypeName(state.currentOutputType)}...`;
+        setTimeout(() => {
+            showToast(`${getOutputTypeName(state.currentOutputType)} exportado com sucesso!`, 'success');
+            elements.projectStatus.textContent = 'Pronto para criar';
+        }, 2000);
+    }
+
+    function exportJson() {
+        showToast('Metadados exportados como JSON', 'success');
+    }
+
+    function exportClips() {
+        showToast('Clips exportados com sucesso!', 'success');
+    }
+
+    function resetSettings() {
+        elements.outputFormat.value = 'story';
+        elements.outputStyle.value = 'Minimal';
+        setOutputType('story');
+        showToast('Configurações resetadas', 'success');
+    }
+
+    function applySettings() {
+        state.settings.outputFormat = elements.outputFormat.value;
+        state.settings.outputStyle = elements.outputStyle.value;
+        setOutputType(state.settings.outputFormat);
+        showToast('Configurações aplicadas', 'success');
+    }
+
+    function newProject() {
+        if (confirm('Tem certeza que deseja criar um novo projeto? Todo o progresso não salvo será perdido.')) {
+            // Resetar estado
+            state.media = [];
+            state.clips = [];
+            state.content = '';
+
+            // Resetar UI
+            updateUI();
+            showToast('Novo projeto criado', 'success');
+        }
+    }
+
+    function configureOutput() {
+        showToast('Configurações de saída abertas', 'success');
+    }
+
+    function showHelp() {
+        showToast('Ajuda e documentação', 'success');
+    }
+
+    // Atualizar lista de clips
+    function updateClipsList() {
+        elements.clipsList.innerHTML = '';
+
+        state.clips.forEach(clip => {
+            const clipElement = document.createElement('div');
+            clipElement.className = 'clip-item';
+            clipElement.innerHTML = `
+                    <div>
+                        <div style="font-weight:700">${clip.name}</div>
+                        <div class="clip-meta">Vídeo: ${clip.video} — ${clip.start} → ${clip.end}</div>
+                    </div>
+                    <div style="display:flex;gap:8px;align-items:center">
+                        <button class="secondary view-clip">Visualizar</button>
+                        <button class="btn ghost remove-clip">Remover</button>
+                    </div>
+                `;
+
+            // Adicionar event listeners para os botões do clip
+            clipElement.querySelector('.view-clip').addEventListener('click', () => {
+                showToast(`Visualizando ${clip.name}`, 'success');
+            });
+
+            clipElement.querySelector('.remove-clip').addEventListener('click', () => {
+                state.clips = state.clips.filter(c => c.id !== clip.id);
+                updateClipsList();
+                showToast(`${clip.name} removido`, 'success');
+            });
+
+            elements.clipsList.appendChild(clipElement);
+        });
+    }
+
+    // Atualizar toda a UI
+    function updateUI() {
+        // Atualizar contador de mídia
+        elements.mediaCount.textContent = state.media.length;
+
+        // Atualizar previews de mídia
+        elements.mediaPreviews.innerHTML = '';
+        state.media.forEach((media, index) => {
+            const preview = document.createElement('div');
+            preview.className = 'preview-card';
+
+            if (media.isImage) {
+                preview.innerHTML = `
+                    <img src="${media.url}" alt="${media.name}">
+                    <div class="meta">${index + 1}/${state.media.length}</div>
+                `;
+            } else if (media.isVideo) {
+                preview.innerHTML = `
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect width='100' height='100' rx='10' fill='%23f1f5f9'/%3E%3Ctext x='50' y='54' font-size='12' fill='%2364748b' text-anchor='middle'%3EVídeo%3C/text%3E%3C/svg%3E" alt="video placeholder">
+                    <div class="meta">00:30</div>
+                `;
+            }
+
+            elements.mediaPreviews.appendChild(preview);
+        });
+
+        // Atualizar lista de clips
+        updateClipsList();
+
+        // Atualizar preview de saída
+        updateOutputPreview();
+    }
+
+    // Mostrar notificação toast
+    function showToast(message, type = 'success') {
+        elements.toastMessage.textContent = message;
+        elements.toast.className = `toast ${type}`;
+        elements.toast.classList.add('show');
+
+        setTimeout(() => {
+            elements.toast.classList.remove('show');
+        }, 3000);
+    }
+
+    // Inicializar a aplicação quando o DOM estiver carregado
+    document.addEventListener('DOMContentLoaded', init);
+</script>
 </body>
 </html>
